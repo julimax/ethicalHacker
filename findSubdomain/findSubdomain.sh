@@ -36,8 +36,15 @@ echo "domains saved at $folder/domains.txt";
 cat $folder/assetfinder.txt $folder/subfinder.txt  $folder/amass.txt $folder/cert.txt | anew $folder/domains.txt
 
 # enumerating DNS
-echo -e "${red}{+}Enumerating DNS..";
+echo -e "${red}[+]Enumerating DNS..";
 cat $folder/domains.txt | dnsx -a -resp-only -o $folder/dnsx.txt
 
-#mapcidir -l $domain -aggregate -o $folder/DNS.txt
+# enumerate CIDR
+#echo -e "${red}[+]Enumerating CIDR"
+#mapcidir -l $folder/dnsx.txt -aggregate -o $folder/mapcidir.txt
+
+# enumerate Naabu
+#echo -e "${blue}[+]Enumerating NAABU";
+#naabu -l $folder/mapcidr.txt top-ports 100 -sa | httpx -timeout 60 -threads 100 | anew $folder/naabuIP.txt
+
 
