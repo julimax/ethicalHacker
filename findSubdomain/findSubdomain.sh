@@ -24,5 +24,20 @@ fi
 
 echo -e "${red}[+]Enumerate all domains..";
 assetfinder --subs-only ${domain} > $folder/assetfinder.txt 
+subfinder -d ${domain} -o $folder/subfinder.txt
+amass enum --passive -d $domain -o $folder/amass.txt
 
+# enumeramos Crt.sh
+echo -e "${red}{+}Enumerate Cert.sh..";
+curl "https://crt.sh/?q=%25.$domain&output=json" | jq -r '.[].name_value' | sed 's/\*\.//g' | anew $folder/cert.txt
+
+# combining resutls
+echo "domains saved at $folder/domains.txt";
+cat $folder/assetfinder.txt $folder/subfinder.txt  $folder/amass.txt $folder/cert.txt | anew $folder/domains.txt
+
+# enumerating DNS
+echo -e "${red}{+}Enumerating DNS..";
+cat $folder/domains.txt | dnsx -a -resp-only -o $folder/dnsx.txt
+
+#mapcidir -l $domain -aggregate -o $folder/DNS.txt
 
